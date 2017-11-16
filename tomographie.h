@@ -3,6 +3,6 @@
 #include "entree_sortie.h"
 
 
-void fichierEnTableau(char* s,int** matrice,int** tableau);
+void fichierEnTableau(char* s,int** matrice,int** seqL,int** seqC);
 
 #endif

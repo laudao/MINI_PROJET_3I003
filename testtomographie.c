@@ -11,9 +11,10 @@ int main(int argc, char **argv){
 	char* nameFile = strdup(argv[1]);
 
 	int** matrice;
-	int** tableau;
+	int** tableau1;
+	int** tableau2;
 
-	fichierEnTableau(nameFile,matrice,tableau);
+	fichierEnTableau(nameFile,matrice,tableau1,tableau2);
 
 	return 0;
 }
