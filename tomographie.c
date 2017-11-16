@@ -1,7 +1,7 @@
 #include "tomographie.h"
 
 
-//focntion qui prend en argument le nom du fichier qui lit le contenu et qui renvoie 2 pointeur sur tableau un avec la matrice et un avec les sequences  
+//focntion qui lit le contenu du fichiers et qui initialise la matrice le tableau des sequences des lignes
 void fichierEnTableau(char* s,int** matrice,int** seqL,int** seqC){
 
 	FILE* f=fopen(s,"r");
@@ -40,7 +40,7 @@ void fichierEnTableau(char* s,int** matrice,int** seqL,int** seqC){
 	}
 	
 	printf("\n");
-	//initialisation du tableau des seq avec les valeurs lues dans le fichier et affichage sur le flux de sortie
+	//initialisation du tableau des seq des lignes avec les valeurs lues dans le fichier et affichage sur le flux de sortie
 
 	int taille_seqL=0;
 	int cpt=0;
@@ -67,7 +67,7 @@ void fichierEnTableau(char* s,int** matrice,int** seqL,int** seqC){
 	}
 	
 	printf("\n");
-
+//initialisation du tableau des seq des colonnes avec les valeurs lues dans le fichier et affichage sur le flux de sortie
 	int taille_seqC=0;
 	
 	seqC=(int**)malloc(sizeof(int*)*n);
