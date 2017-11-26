@@ -107,6 +107,16 @@ void fichierEnTableau(char* s, t_matrice* matrice, t_ens_sequences* seqL, t_ens_
 		fclose(f);	
 }
 
+void affiche_matrice(t_matrice* matrice){
+	int i, j;
+	for (i=0; i<matrice->n; i++){
+		for (j=0; j<matrice->m; j++){
+			printf("%d ", matrice->mat[i][j]);
+		}
+		printf("\n");
+	}
+}
+
 /* fonction qui, étant donné une ligne i entièrement coloriée de matrice, 
     vérifie si le coloriage respecte bien la séquence seqL 
 */
@@ -133,14 +143,18 @@ int compare_seq_ligne(int i, t_matrice* matrice)
 				cpt = 0;
 			}
 		}
-		else { // case blanche
+		else { // case blanche ou non coloriée
 			if ((cpt>0) && (cpt < sequence->seq[k])){ // il manque des cases noires
 				return 0;
 			}
 		}
 	}
 
-	return 1;
+	if ((k == 0) && (taille_seqL>0)){ // aucun bloc colorié
+		return 0;
+	}else{
+		return 1;
+	}
 }
 
 
@@ -170,14 +184,18 @@ int compare_seq_col(int j, t_matrice* matrice)
 				cpt = 0;
 			}
 		}
-		else { // case blanche
+		else { // case blanche ou non coloriée
 			if ((cpt>0) && (cpt < sequence->seq[k])){ // il manque des cases noires
 				return 0;
 			}
 		}
 	}
 
-	return 1;
+	if ((k == 0) && (taille_seqC>0)){
+		return 0;
+	}else{
+		return 1;
+	}
 }
 
 
@@ -186,20 +204,19 @@ int enumeration(int k, int c, t_matrice* matrice)
 	int ok;
 	int raz;
 	int i,j;
-	int **mat = matrice->mat;
 	int n, m;
-
+	
 	n = matrice->n;
 	m = matrice->m;
-	i = k/m;
+	i = floor(k/m);
 	j = k % m;
 
-	if (mat[i][j] == 0){
-		mat[i][j] = c;
+	if (matrice->mat[i][j] == 0){
+		matrice->mat[i][j] = c;
 		raz = 1;
 	}
 	else{
-		if (mat[i][j] != c){
+		if (matrice->mat[i][j] != c){
 			return 0;
 		}
 		else {
@@ -215,7 +232,7 @@ int enumeration(int k, int c, t_matrice* matrice)
 	if (ok){
 		if ((i == n-1) && (j == m-1))
 			return 1;
-		ok = (enumeration(k+1, 1, matrice) || enumeration(k+1, 2, matrice));
+		ok = ((enumeration(k+1, 1, matrice)) + (enumeration(k+1, 2, matrice)));
 	}
 	if ((!ok) && (raz))
 		matrice->mat[i][j] = 0;
