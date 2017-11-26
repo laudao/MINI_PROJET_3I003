@@ -2,10 +2,10 @@
 
 
 // fonction qui lit le contenu du fichiers et qui initialise la matrice avec le tableau des sequences des lignes
-void fichierEnTableau(char* s, Matrice* matrice, Ens_sequences* seqL, Ens_sequences* seqC){
+void fichierEnTableau(char* s, t_matrice* matrice, t_ens_sequences* seqL, t_ens_sequences* seqC){
 	int taille_seqC=0;
-	int l=0;
 	int taille_seqL=0;
+	int l=0;
 	int i=0;
 	int j=0;
 	int m=0;
@@ -13,10 +13,6 @@ void fichierEnTableau(char* s, Matrice* matrice, Ens_sequences* seqL, Ens_sequen
 	FILE* f=NULL;
 
 	f=fopen(s,"r");
-	
-//	matrice=(Matrice*)malloc(sizeof(Matrice));
-//	seqL=(Ens_sequences*)malloc(sizeof(Ens_sequences));
-//	seqC=(Ens_sequences*)malloc(sizeof(Ens_sequences));
 	
 	if (f == NULL){
 		fprintf(stderr, "Erreur lors de l'ouverture du fichier %s\n", s);
@@ -58,13 +54,13 @@ void fichierEnTableau(char* s, Matrice* matrice, Ens_sequences* seqL, Ens_sequen
 	//initialisation du tableau des seq des lignes avec les valeurs lues dans le fichier et affichage sur le flux de sortie
 
 
-	seqL->sequences=(Sequence**)malloc(sizeof(Sequence*)*n);
+	seqL->sequences=(t_sequence**)malloc(sizeof(t_sequence*)*n);
 	seqL->taille=n;
 
 	printf("Diable voici le tableau des sequences des lignes!\n");
 	for(i=0;i<n;i++){ // pour chaque ligne de la matrice 
 		taille_seqL= GetEntier(f); // taille de la séquence de la ligne i
-		seqL->sequences[i]=(Sequence*)malloc(sizeof(Sequence)); 
+		seqL->sequences[i]=(t_sequence*)malloc(sizeof(t_sequence)); 
 		seqL->sequences[i]->taille=taille_seqL;
 		seqL->sequences[i]->seq = (int*)malloc(sizeof(int)*taille_seqL); // allocation d'un tableau d'entiers de taille_seqL cases
 
@@ -82,12 +78,12 @@ void fichierEnTableau(char* s, Matrice* matrice, Ens_sequences* seqL, Ens_sequen
 	printf("\n");
 //initialisation du tableau des seq des colonnes avec les valeurs lues dans le fichier et affichage sur le flux de sortie
 	
-	seqC->sequences=(Sequence**)malloc(sizeof(Sequence*)*m);
+	seqC->sequences=(t_sequence**)malloc(sizeof(t_sequence*)*m);
 	printf("Oh WTF ! voici le tableau des sequences des colonnes!\n");
 
 	for(j=0;j<m;j++){
 		taille_seqC= GetEntier(f);
-		seqC->sequences[j]=(Sequence*)malloc(sizeof(Sequence));
+		seqC->sequences[j]=(t_sequence*)malloc(sizeof(t_sequence));
 		seqC->sequences[j]->taille=taille_seqC;
 		seqC->sequences[j]->seq=(int*)malloc(sizeof(int)*taille_seqC);
 		
@@ -114,13 +110,13 @@ void fichierEnTableau(char* s, Matrice* matrice, Ens_sequences* seqL, Ens_sequen
 /* fonction qui, étant donné une ligne i entièrement coloriée de matrice, 
     vérifie si le coloriage respecte bien la séquence seqL 
 */
-int compare_seq_ligne(int i, Matrice* matrice)
+int compare_seq_ligne(int i, t_matrice* matrice)
 {
 	int j=0;
 	int k=0;
 	int cpt=0;
 	int m = matrice->m;
-	Sequence *sequence = matrice->seqL->sequences[i];
+	t_sequence *sequence = matrice->seqL->sequences[i];
 	int taille_seqL = sequence->taille;
 	
 	for (j=0; j<m; j++){
@@ -151,13 +147,13 @@ int compare_seq_ligne(int i, Matrice* matrice)
 /* fonction qui, étant donné une colonne j entièrement coloriée de matrice, 
     vérifie si le coloriage respecte bien la séquence seqC
 */
-int compare_seq_col(int j, Matrice* matrice)
+int compare_seq_col(int j, t_matrice* matrice)
 {
 	int i=0;
 	int k=0;
 	int cpt=0;
 	int n = matrice->n;
-	Sequence *sequence = matrice->seqC->sequences[j];
+	t_sequence *sequence = matrice->seqC->sequences[j];
 	int taille_seqC = sequence->taille;
 	
 	for (i=0; i<n; i++){
@@ -184,3 +180,45 @@ int compare_seq_col(int j, Matrice* matrice)
 	return 1;
 }
 
+
+int enumeration(int k, int c, t_matrice* matrice)
+{
+	int ok;
+	int raz;
+	int i,j;
+	int **mat = matrice->mat;
+	int n, m;
+
+	n = matrice->n;
+	m = matrice->m;
+	i = k/m;
+	j = k % m;
+
+	if (mat[i][j] == 0){
+		mat[i][j] = c;
+		raz = 1;
+	}
+	else{
+		if (mat[i][j] != c){
+			return 0;
+		}
+		else {
+			raz = 0;
+		}
+	}
+	ok = 1;
+	if (i == n-1)
+		ok = compare_seq_col(j, matrice);
+	if ((ok) && (j == m-1))
+		ok = compare_seq_ligne(i, matrice);
+	
+	if (ok){
+		if ((i == n-1) && (j == m-1))
+			return 1;
+		ok = (enumeration(k+1, 1, matrice) || enumeration(k+1, 2, matrice));
+	}
+	if ((!ok) && (raz))
+		matrice->mat[i][j] = 0;
+	
+	return ok;
+}

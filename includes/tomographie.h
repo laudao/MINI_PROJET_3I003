@@ -6,29 +6,28 @@
 typedef struct sequence{ 
 	int taille; // nombre de blocs de la séquence 
 	int* seq; // tableau dont chaque case représente le nombre de blocs à colorier
-} Sequence;
+} t_sequence;
 
 // Ensemble des séquences de ligne/colonne à respecter 
 typedef struct ens_seq{
 	int taille; // correspond au nombre de lignes ou de colonnes de la matrice
-	struct sequence** sequences; // tableau de pointeurs sur séquences
-} Ens_sequences;
+	t_sequence** sequences; // tableau de pointeurs sur séquences
+} t_ens_sequences;
 
 typedef struct matrice{
 	int n; // nombre de lignes
 	int m; // nombre de colonnes;
-	Ens_sequences* seqL;
-	Ens_sequences* seqC;
+	t_ens_sequences* seqL;
+	t_ens_sequences* seqC;
 	int **mat; 
-} Matrice;
+} t_matrice;
 
 
-void fichierEnTableau(char* s,Matrice* matrice,Ens_sequences* seqL,Ens_sequences* seqC);
+void fichierEnTableau(char* s, t_matrice* matrice, t_ens_sequences* seqL, t_ens_sequences* seqC);
 
-int compare_seq_ligne(int i, Matrice* matrice);
+int compare_seq_ligne(int i, t_matrice* matrice);
 
-int compare_seq_col(int j, Matrice* matrice);
+int compare_seq_col(int j, t_matrice* matrice);
 
-//void fichierEnTableau(char* s,int** matrice,int** seqL,int** seqC);
-
+int enumeration(int k, int c, t_matrice* m);
 #endif
