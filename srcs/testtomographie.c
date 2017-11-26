@@ -10,11 +10,57 @@ int main(int argc, char **argv){
 	
 	char* nameFile = strdup(argv[1]);
 
-	int** matrice=NULL;
-	int** tableau1=NULL;
-	int** tableau2=NULL;
+	Matrice M;
+	Ens_sequences seqL;
+	Ens_sequences seqC;
+	int i, j;
+//	int** matrice=NULL;
+//	int** tableau1=NULL;
+//	int** tableau2=NULL;
 
-	fichierEnTableau(nameFile,matrice,tableau1,tableau2);
+	fichierEnTableau(nameFile,&M,&seqL,&seqC);
+
+	M.mat[0][0] = 2;
+	M.mat[0][1] = 2;
+	M.mat[0][2] = 2;
+	M.mat[0][3] = 1;
+	M.mat[0][4] = 1;
+	M.mat[1][0] = 1;
+	M.mat[1][1] = 1;
+	M.mat[1][2] = 1;
+	M.mat[1][3] = 1;
+	M.mat[1][4] = 1;
+	M.mat[2][0] = 2;
+	M.mat[2][1] = 1;
+	M.mat[2][2] = 2;
+	M.mat[2][3] = 1;
+	M.mat[2][4] = 2;
+	M.mat[3][0] = 1;
+	M.mat[3][1] = 1;
+	M.mat[3][2] = 2;
+	M.mat[3][3] = 2;
+	M.mat[3][4] = 2;
+
+	for (i=0; i<M.n; i++){
+		for (j=0; j<M.m; j++){
+			printf("%d ", M.mat[i][j]);
+		}
+		printf("\n");
+	}
+
+	for (i=0; i<M.n; i++){
+		if (compare_seq_ligne(i, &M))
+			printf("ligne %d OK \n", i);
+		else
+			printf("ligne %d KO \n", i);
+	}
+	printf("\n");
+	for (j=0; j<M.m; j++){
+		if (compare_seq_col(j, &M))
+			printf("col %d OK \n", j);
+		else
+			printf("col %d KO \n", j);
+	}
 
 	return 0;
 }
