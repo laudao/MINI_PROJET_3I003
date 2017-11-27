@@ -21,7 +21,7 @@ int main(int argc, char **argv){
 	else
 		printf("ko\n");
 	
-
+	affiche_matrice(&M);
 //	M.mat[0][0] = 2;
 //	M.mat[0][1] = 2;
 //	M.mat[0][2] = 2;

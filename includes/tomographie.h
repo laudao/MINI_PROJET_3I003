@@ -1,6 +1,7 @@
 #ifndef __TOMO_H__
 #define __TOMO_H__	
 #include "entree_sortie.h"
+#include <math.h>
 
 // Séquence 
 typedef struct sequence{ 
@@ -30,4 +31,6 @@ int compare_seq_ligne(int i, t_matrice* matrice);
 int compare_seq_col(int j, t_matrice* matrice);
 
 int enumeration(int k, int c, t_matrice* m);
+
+void affiche_matrice(t_matrice *matrice);
 #endif
