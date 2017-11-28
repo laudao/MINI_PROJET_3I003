@@ -2,7 +2,7 @@
 
 
 // fonction qui lit le contenu du fichiers et qui initialise la matrice avec le tableau des sequences des lignes
-void fichierEnTableau(char* s, t_matrice* matrice, t_ens_sequences* seqL, t_ens_sequences* seqC){
+void fichierEnTableau(char* s, t_matrice* matrice){
 	int taille_seqC=0;
 	int taille_seqL=0;
 	int l=0;
@@ -28,6 +28,9 @@ void fichierEnTableau(char* s, t_matrice* matrice, t_ens_sequences* seqL, t_ens_
 	matrice->n=n;
 	matrice->m=m;
 	
+	matrice->seqL = (t_ens_sequences*)malloc(sizeof(t_ens_sequences));
+	matrice->seqC = (t_ens_sequences*)malloc(sizeof(t_ens_sequences));
+
 	//allocation de la matrice dans la memoire
 	matrice->mat=(int**)malloc(sizeof(int*)*n);
 	for(i=0;i<n;i++){
@@ -54,21 +57,21 @@ void fichierEnTableau(char* s, t_matrice* matrice, t_ens_sequences* seqL, t_ens_
 	//initialisation du tableau des seq des lignes avec les valeurs lues dans le fichier et affichage sur le flux de sortie
 
 
-	seqL->sequences=(t_sequence**)malloc(sizeof(t_sequence*)*n);
-	seqL->taille=n;
+	matrice->seqL->sequences=(t_sequence**)malloc(sizeof(t_sequence*)*n);
+	matrice->seqL->taille=n;
 
 	printf("Diable voici le tableau des sequences des lignes!\n");
 	for(i=0;i<n;i++){ // pour chaque ligne de la matrice 
 		taille_seqL= GetEntier(f); // taille de la séquence de la ligne i
-		seqL->sequences[i]=(t_sequence*)malloc(sizeof(t_sequence)); 
-		seqL->sequences[i]->taille=taille_seqL;
-		seqL->sequences[i]->seq = (int*)malloc(sizeof(int)*taille_seqL); // allocation d'un tableau d'entiers de taille_seqL cases
+		matrice->seqL->sequences[i]=(t_sequence*)malloc(sizeof(t_sequence)); 
+		matrice->seqL->sequences[i]->taille=taille_seqL;
+		matrice->seqL->sequences[i]->seq = (int*)malloc(sizeof(int)*taille_seqL); // allocation d'un tableau d'entiers de taille_seqL cases
 
 		if (taille_seqL > 0){
 			Skip(f);
 			for(l=0;l<taille_seqL;l++){ // pour chaque bloc de la séquence 
-				seqL->sequences[i]->seq[l]=GetEntier(f);
-				printf("%d ",seqL->sequences[i]->seq[l]);
+				matrice->seqL->sequences[i]->seq[l]=GetEntier(f);
+				printf("%d ",matrice->seqL->sequences[i]->seq[l]);
 				Skip(f);
 			}
 		}
@@ -78,21 +81,22 @@ void fichierEnTableau(char* s, t_matrice* matrice, t_ens_sequences* seqL, t_ens_
 	printf("\n");
 //initialisation du tableau des seq des colonnes avec les valeurs lues dans le fichier et affichage sur le flux de sortie
 	
-	seqC->sequences=(t_sequence**)malloc(sizeof(t_sequence*)*m);
+	matrice->seqC->sequences=(t_sequence**)malloc(sizeof(t_sequence*)*m);
+	matrice->seqC->taille=m;
 	printf("Oh WTF ! voici le tableau des sequences des colonnes!\n");
 
 	for(j=0;j<m;j++){
 		taille_seqC= GetEntier(f);
-		seqC->sequences[j]=(t_sequence*)malloc(sizeof(t_sequence));
-		seqC->sequences[j]->taille=taille_seqC;
-		seqC->sequences[j]->seq=(int*)malloc(sizeof(int)*taille_seqC);
+		matrice->seqC->sequences[j]=(t_sequence*)malloc(sizeof(t_sequence));
+		matrice->seqC->sequences[j]->taille=taille_seqC;
+		matrice->seqC->sequences[j]->seq=(int*)malloc(sizeof(int)*taille_seqC);
 		
 
 		if (taille_seqC > 0){ // séquence non vide
 			Skip(f); 
 			for(l=0;l<taille_seqC;l++){ // pour chaque bloc de la séquence 
-				seqC->sequences[j]->seq[l]=GetEntier(f);
-				printf("%d ",seqC->sequences[j]->seq[l]);
+				matrice->seqC->sequences[j]->seq[l]=GetEntier(f);
+				printf("%d ",matrice->seqC->sequences[j]->seq[l]);
 				Skip(f);
 			}
 		}
@@ -100,9 +104,6 @@ void fichierEnTableau(char* s, t_matrice* matrice, t_ens_sequences* seqL, t_ens_
 		printf("\n"); 
 	} 
 	
-	matrice->seqL = seqL;
-	matrice->seqC = seqC;
-
 	if (f)
 		fclose(f);	
 }
@@ -306,7 +307,7 @@ int testVecteurLigne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT)
 	} 
 	
 	L = matrice->seqL->sequences[i]->seq[l]; // nombre de cases dans le bloc l de la séquence de la ligne i
-	printf("L : %d\n", L);	
+	printf("L : %d, j=%d\n", L, j);
 	if((l==0)&&(j==L-1)){
 		return testSiAucunLigne(matrice,i,0,j,1);
 	}
@@ -338,6 +339,7 @@ int testVecteurLigne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT)
 		}
 	}
 
+	printf("c1 : %d, c2 : %d\n", c1, c2);
 	TT->mat[j][l]=c1||c2;
 	return TT->mat[j][l];
 }
@@ -353,12 +355,13 @@ int testVecteurColonne_Rec(t_matrice* matrice, int j, int i, int l, t_matrice *T
 	}
 	
 	L = matrice->seqC->sequences[j]->seq[l]; //L de l
-	
-	if((l==0)&&(i=L-1)){
+
+	if((l==0)&&(i==L-1)){
 		return testSiAucunCol(matrice,j,0,i,1);
 	}
 	
 	if(i<=L-1){
+		printf("Diable\n");
 		return 0;
 	}
 	
@@ -386,4 +389,141 @@ int testVecteurColonne_Rec(t_matrice* matrice, int j, int i, int l, t_matrice *T
 	}
 	TT->mat[i][l]=c1||c2;
 	return TT->mat[i][l];
+}
+
+int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb)
+{
+	int j;
+ 	int c1, c2;
+ 	int cptcolor;
+ 	int m;
+ 	t_matrice* TT;
+ 	cptcolor = 0;
+ 	(*nb) = 0;
+	m = matrice->m;
+	TT = initialise_TT(m, matrice->seqL->sequences[i]->taille);
+
+	for (j=m-1; j>=0; j--){
+		printf("i=%d, j=%d\n", i, j);
+		if (matrice->mat[i][j] == 0){
+			matrice->mat[i][j] = 1;
+			c1 = testVecteurLigne_Rec(matrice, i, m-1, (matrice->seqL->sequences[i]->taille)-1, TT);
+			printf("c1 = %d\n", c1);
+			matrice->mat[i][j] = 2;
+			c2 = testVecteurLigne_Rec(matrice, i, m-1, (matrice->seqL->sequences[i]->taille)-1, TT);
+			printf("c2 = %d\n", c2);
+			matrice->mat[i][j] = 0;
+			if ((!c1) && (!c2)){
+				printf("j : %d\n", j);
+				return 0;
+			}
+			if ((c1) && (!c2)){
+				matrice->mat[i][j] = 1;	
+				cptcolor++;
+				if (!marqueC[j]){
+					marqueC[j] = 1;
+					(*nb)++;
+				}
+			}
+			if ((!c1) && (c2)){
+				matrice->mat[i][j] = 2;
+				cptcolor++;
+				if (!marqueC[j]){
+					marqueC[j] = 1;
+					(*nb)++;
+				}
+			}
+		}
+ 	}
+ 	return 1;
+}
+
+int propagCol(t_matrice* matrice, int j, int* marqueL, int *nb)
+{
+	int i;
+ 	int c1, c2;
+ 	int cptcolor;
+ 	int n;
+ 	t_matrice* TT;
+ 	cptcolor = 0;
+ 	*nb = 0;
+	n = matrice->n;
+	TT = initialise_TT(n, matrice->seqC->sequences[j]->taille);
+
+	for (i=n-1; i>=0; i--){
+		if (matrice->mat[i][j] == 0){
+			matrice->mat[i][j] = 1;
+			c1 = testVecteurColonne_Rec(matrice, j, n-1, matrice->seqC->sequences[j]->taille-1, TT);
+			matrice->mat[i][j] = 2;
+			c2 = testVecteurColonne_Rec(matrice, j, n-1, matrice->seqC->sequences[j]->taille-1, TT);
+			matrice->mat[i][j] = 0;
+			if ((!c1) && (!c2)){
+				printf("i=%d j=%d\n", i, j);
+				return 0;
+			}
+			if ((c1) && (!c2)){
+				matrice->mat[i][j] = 1;
+				cptcolor++;
+				if (!marqueL[i]){
+					marqueL[i] = 1;
+					(*nb)++;
+				}
+			}
+			if ((!c1) && (c2)){
+				matrice->mat[i][j] = 2;
+				cptcolor++;
+				if (!marqueL[i]){
+					marqueL[i] = 1;
+					(*nb)++;
+				}
+			}
+		}
+ 	}
+ 	return 1;
+}
+
+int propagation(t_matrice *matrice)
+{
+	int *marqueL, *marqueC;
+	int nbmL, nbmC, nb;
+	int i, j;
+	int ok;
+	int n, m;
+
+	n = matrice->n;
+	m = matrice->m;
+
+	ok = 1;
+	marqueL = (int*)malloc(sizeof(int)*n);
+	for (i=0; i<n; i++)
+		marqueL[i] = 1;
+	marqueC = (int*)malloc(sizeof(int)*m);
+	for (j=0; j<m; j++)
+		marqueC[j] = 1;
+
+	nbmL = n;
+	nbmC = m;
+
+	while ((ok) && ((nbmL != 0) || (nbmC != 0))){
+		i=0;
+		while ((ok) && (i<n)){
+			if (marqueL[i]){
+				ok = propagLigne(matrice, i, marqueC, &nb);
+				nbmC += nb;
+				marqueL[i] = 0;
+				nbmL--;
+			}
+			i++;
+		}
+		while ((ok) && (j<m)){
+			if (marqueC[j]){
+				ok = propagCol(matrice, j, marqueL, &nb);
+				nbmL += nb;
+				marqueC[j] = 0;
+				nbmC--;
+			}
+			j++;
+		}
+	}
+	return ok;
 }
