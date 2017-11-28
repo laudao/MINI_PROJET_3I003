@@ -13,25 +13,24 @@ int main(int argc, char **argv){
 	t_matrice M;
 	t_ens_sequences seqL;
 	t_ens_sequences seqC;
+	t_matrice* TT;
 
 	fichierEnTableau(nameFile,&M,&seqL,&seqC);
-
-//	M.mat[0][0] = 1;
-//	M.mat[1][0] = 2;
-//	M.mat[2][0] = 1;	
-//	M.mat[3][0] = 2;	
-//	M.mat[4][0] = 2;	
-//	M.mat[5][0] = 2;
-//
-//	if (compare_seq_col(0, &M))
-//		printf("OK\n");
-//	else
-//		printf("KO\n");
+	printf("taille séquence : %d\n", seqL.sequences[0]->taille);
+	TT = initialise_TT(M.m, seqL.sequences[0]->taille);
+/*
 	if ((enumeration(0, 1, &M)) || enumeration(0,2, &M))
 		printf("Coloriée\n");
 	else
 		printf("Non coloriée\n");
+*/
 
+	if (testVecteurLigne_Rec(&M, 0, (M.m)-1, 0, TT) == 1)
+		printf("OK\n");
+	else
+		printf("KO\n");
+		
+	affiche_matrice(TT);
 	affiche_matrice(&M);
 	return 0;
 }

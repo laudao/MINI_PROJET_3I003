@@ -33,4 +33,15 @@ int compare_seq_col(int j, t_matrice* matrice);
 int enumeration(int k, int c, t_matrice* m);
 
 void affiche_matrice(t_matrice *matrice);
+
+t_matrice* initialise_TT(int taille, int k);
+
+int testSiAucunLigne(t_matrice *matrice, int i, int j1, int j2, int couleur);
+
+int testSiAucunCol(t_matrice *matrice, int j, int i1, int i2, int couleur);
+
+int testVecteurLigne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT);
+
+int testVecteurColonne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT);
+
 #endif
