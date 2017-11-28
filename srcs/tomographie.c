@@ -256,17 +256,17 @@ int enumeration(int k, int c, t_matrice* matrice)
 	return ok;
 }
 
-t_matrice* initialise_TT(int taille, int k){
+t_matrice* initialise_TT(int nbLignes, int nbColonnes){
 	int i,j;
 	t_matrice *TT = (t_matrice*)malloc(sizeof(t_matrice));
-	TT->n=taille;
-	TT->m=k;
+	TT->n = nbLignes;
+	TT->m = nbColonnes;
 	TT->mat=(int**)malloc(sizeof(int*)*(TT->n));	
 		
 	for(i=0;i<TT->n;i++){
 		TT->mat[i] = (int*)malloc(sizeof(int)*(TT->m));
 		for(j=0;j<TT->m;j++){
-			TT->mat[i][j]=3;//non visite
+			TT->mat[i][j]=3; //non visité
 		}
 	}
 	return TT;
@@ -301,13 +301,13 @@ int testVecteurLigne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT)
 	int c2; //cas ou la case j est noire
 	int L; //L de l
 
-	if(l==-1){
+	if(l==-1){ // séquence vide
 		return testSiAucunLigne(matrice,i,0,j,2);
-	}
+	} 
 	
-	L = matrice->seqL->sequences[i]->seq[l];
-	
-	if((l=0)&&(j=L-1)){
+	L = matrice->seqL->sequences[i]->seq[l]; // nombre de cases dans le bloc l de la séquence de la ligne i
+	printf("L : %d\n", L);	
+	if((l==0)&&(j==L-1)){
 		return testSiAucunLigne(matrice,i,0,j,1);
 	}
 	
@@ -318,7 +318,7 @@ int testVecteurLigne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT)
 	if((TT->mat[j][l])!=3){
 		return TT->mat[j][l];
 	}
-	printf("Diable\n");
+	
 	if(matrice->mat[i][j]==2){
 		c1=0;
 	}
@@ -339,21 +339,22 @@ int testVecteurLigne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT)
 	}
 
 	TT->mat[j][l]=c1||c2;
-	printf("TT[%d][%d] = %d\n", j, l, TT->mat[j][l]);
 	return TT->mat[j][l];
 }
 
-int testVecteurColonne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT)
+int testVecteurColonne_Rec(t_matrice* matrice, int j, int i, int l, t_matrice *TT)
 {
 	int c1; //cas ou la case j est blanche
 	int c2; //cas ou la case j est noire
-	int L = matrice->seqC->sequences[j]->seq[l]; //L de l
-	
-	if(l==0){
+	int L;
+
+	if(l==-1){
 		return testSiAucunCol(matrice,j,0,i,2);
 	}
 	
-	if((l==1)&&(i=L-1)){
+	L = matrice->seqC->sequences[j]->seq[l]; //L de l
+	
+	if((l==0)&&(i=L-1)){
 		return testSiAucunCol(matrice,j,0,i,1);
 	}
 	
@@ -361,15 +362,15 @@ int testVecteurColonne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *T
 		return 0;
 	}
 	
-	if(TT->mat[i][j]!=3){
-		return TT->mat[i][j];
+	if(TT->mat[i][l]!=3){
+		return TT->mat[i][l];
 	}
 	
 	if(matrice->mat[i][j]==2){
 		c1=0;
 	}
 	else{
-		c1=testVecteurColonne_Rec(matrice,i-1,j,l,TT);
+		c1=testVecteurColonne_Rec(matrice,j,i-1,l,TT);
 	}
 	
 	if(!testSiAucunCol(matrice,j,i-(L-1),i,1)){
@@ -380,10 +381,9 @@ int testVecteurColonne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *T
 			c2=0;
 		}
 		else{
-			c2=testVecteurColonne_Rec(matrice,i-L-1,j,l-1,TT);
+			c2=testVecteurColonne_Rec(matrice,j,i-L-1,l-1,TT);
 		}
 	}
 	TT->mat[i][l]=c1||c2;
-	printf("TT[%d][%d] = %d\n", i, l, TT->mat[i][l]);
 	return TT->mat[i][l];
 }
