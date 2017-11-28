@@ -25,7 +25,7 @@ int main(int argc, char **argv){
 		printf("Non coloriée\n");
 */
 
-	if (testVecteurLigne_Rec(&M, 0, (M.m)-1, 0, TT) == 1)
+	if (testVecteurLigne_Rec(&M, 0, (M.m)-1, seqL.sequences[0]->taille-1, TT) == 1)
 		printf("OK\n");
 	else
 		printf("KO\n");
