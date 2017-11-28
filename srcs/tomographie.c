@@ -133,23 +133,26 @@ int compare_seq_ligne(int i, t_matrice* matrice)
 		if (matrice->mat[i][j] == 2){ // case noire
 			cpt++;
 			if (k>=taille_seqL){ // on a examiné tous les blocs et il y a une case noire en trop
-				printf("Ligne %d : bloc %d (%d) non satisfait (plus de bloc à examiner et une case noire en trop)\n", i, k, sequence->seq[k]);
+//				printf("Ligne %d : bloc %d (%d) non satisfait (plus de bloc à examiner et une case noire en trop)\n", i, k, sequence->seq[k]);
 				return 0;
 			}
 			if (cpt > sequence->seq[k]){ // trop de cases noires pour le bloc 
-				printf("Ligne %d : bloc %d (%d) non satisfait (trop de cases noires)\n", i, k, sequence->seq[k]);
+	//			printf("Ligne %d : bloc %d (%d) non satisfait (trop de cases noires)\n", i, k, sequence->seq[k]);
 				return 0;
 			}
 		}
 		else { // case blanche ou non coloriée
+			if (k>=taille_seqL){
+				return 1;
+			}
 			if (cpt == sequence->seq[k]){ // bloc satisfait
-				printf("Ligne %d : bloc %d (%d) satisfait\n", i, k, sequence->seq[k]);
+	//			printf("Ligne %d : bloc %d (%d) satisfait\n", i, k, sequence->seq[k]);
 				k++;
 				cpt=0;
 			}
 			else{
 				if ((cpt>0) && (cpt < sequence->seq[k])){ // il manque des cases noires	
-					printf("Ligne %d : bloc %d (%d) non satisfait (il manque des cases noires)\n", i, k, sequence->seq[k]);
+		//			printf("Ligne %d : bloc %d (%d) non satisfait (il manque des cases noires)\n", i, k, sequence->seq[k]);
 					return 0;
 				}
 			}
@@ -157,7 +160,7 @@ int compare_seq_ligne(int i, t_matrice* matrice)
 	}
 
 	if ((k == 0) && (taille_seqL>0)){ // aucun bloc colorié mais séquence contient au moins un bloc
-		printf("Ligne %d : bloc %d (%d) non satisfait (aucun bloc colorié)\n", i, k, sequence->seq[k]);
+		//printf("Ligne %d : bloc %d (%d) non satisfait (aucun bloc colorié)\n", i, k, sequence->seq[k]);
 		return 0;
 	}else{
 		return 1;
@@ -177,23 +180,26 @@ int compare_seq_col(int j, t_matrice* matrice)
 		if (matrice->mat[i][j] == 2){ // case noire
 			cpt++;
 			if (k>=taille_seqC){ // on a examiné tous les blocs et il y a une case noire en trop
-				printf("Colonne %d : bloc %d (%d) non satisfait (plus de bloc à examiner et une case noire en trop)\n", j, k, sequence->seq[k]);
+			//	printf("Colonne %d : bloc %d non satisfait (plus de bloc à examiner et une case noire en trop)", j, k);
 				return 0;
 			}
 			if (cpt > sequence->seq[k]){ // trop de cases noires pour le bloc 
-				printf("Colonne %d : bloc %d (%d) non satisfait (trop de cases noires)\n", j, k, sequence->seq[k]);
+			//	printf("Colonne %d : bloc %d (%d) non satisfait (trop de cases noires)\n", j, k, sequence->seq[k]);
 				return 0;
 			}
 		}
 		else { // case blanche ou non coloriée
+			if (k>=taille_seqC){
+				return 1;
+			}
 			if (cpt == sequence->seq[k]){ // bloc satisfait
-				printf("Colonne %d : bloc %d (%d) satisfait\n", j, k, sequence->seq[k]);
+				//printf("Colonne %d : bloc %d (%d) satisfait\n", j, k, sequence->seq[k]);
 				k++;
 				cpt=0;
 			}
 			else{
 				if ((cpt>0) && (cpt < sequence->seq[k])){ // il manque des cases noires
-					printf("Colonne %d : bloc %d (%d) non satisfait (il manque des cases noires)\n", j, k, sequence->seq[k]);
+				//	printf("Colonne %d : bloc %d (%d) non satisfait (il manque des cases noires)\n", j, k, sequence->seq[k]);
 					return 0;
 				}
 			}
@@ -201,7 +207,7 @@ int compare_seq_col(int j, t_matrice* matrice)
 	}
 
 	if ((k == 0) && (taille_seqC>0)){ // aucun bloc colorié mais séquence contient au moins un bloc
-		printf("Colonne %d : bloc %d (%d) non satisfait (aucun bloc colorié)\n", j, k, sequence->seq[k]);
+	//	printf("Colonne %d : bloc %d (%d) non satisfait (aucun bloc colorié)\n", j, k, sequence->seq[k]);
 		return 0;
 	}else{
 		return 1;
@@ -257,11 +263,14 @@ int enumeration(int k, int c, t_matrice* matrice)
 	int raz;
 	int i,j;
 	int n, m;
-	
+
 	n = matrice->n;
 	m = matrice->m;
+
 	i = floor(k/m);
 	j = k % m;
+
+	printf("i : %d  j: %d n*m : %d\n", i, j, n*m);
 
 	if (matrice->mat[i][j] == 0){
 		matrice->mat[i][j] = c;
@@ -276,9 +285,9 @@ int enumeration(int k, int c, t_matrice* matrice)
 		}
 	}
 	ok = 1;
-	if (i == n-1)
+	if (i == (n-1))
 		ok = compare_seq_col(j, matrice);
-	if ((ok) && (j == m-1))
+	if ((ok) && (j == (m-1)))
 		ok = compare_seq_ligne(i, matrice);
 	
 	if (ok){
