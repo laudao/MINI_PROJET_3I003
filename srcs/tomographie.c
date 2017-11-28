@@ -30,7 +30,7 @@ void fichierEnTableau(char* s, t_matrice* matrice, t_ens_sequences* seqL, t_ens_
 	
 	//allocation de la matrice dans la memoire
 	matrice->mat=(int**)malloc(sizeof(int*)*n);
-	for(int i=0;i<n;i++){
+	for(i=0;i<n;i++){
 		matrice->mat[i]=(int*)malloc(sizeof(int)*m);
 	}
 	
@@ -66,7 +66,7 @@ void fichierEnTableau(char* s, t_matrice* matrice, t_ens_sequences* seqL, t_ens_
 
 		if (taille_seqL > 0){
 			Skip(f);
-			for(int l=0;l<taille_seqL;l++){ // pour chaque bloc de la séquence 
+			for(l=0;l<taille_seqL;l++){ // pour chaque bloc de la séquence 
 				seqL->sequences[i]->seq[l]=GetEntier(f);
 				printf("%d ",seqL->sequences[i]->seq[l]);
 				Skip(f);
@@ -131,29 +131,28 @@ int compare_seq_ligne(int i, t_matrice* matrice)
 	
 	for (j=0; j<m; j++){
 		if (matrice->mat[i][j] == 2){ // case noire
-			cpt++;
 			if (k>=taille_seqL){ // on a examiné tous les blocs et il y a une case noire en trop
 //				printf("Ligne %d : bloc %d (%d) non satisfait (plus de bloc à examiner et une case noire en trop)\n", i, k, sequence->seq[k]);
 				return 0;
 			}
+			cpt++;
 			if (cpt > sequence->seq[k]){ // trop de cases noires pour le bloc 
 	//			printf("Ligne %d : bloc %d (%d) non satisfait (trop de cases noires)\n", i, k, sequence->seq[k]);
 				return 0;
 			}
 		}
 		else { // case blanche ou non coloriée
-			if (k>=taille_seqL){
-				return 1;
-			}
-			if (cpt == sequence->seq[k]){ // bloc satisfait
+			if (k<taille_seqL){
+				if (cpt == sequence->seq[k]){ // bloc satisfait
 	//			printf("Ligne %d : bloc %d (%d) satisfait\n", i, k, sequence->seq[k]);
-				k++;
-				cpt=0;
-			}
-			else{
-				if ((cpt>0) && (cpt < sequence->seq[k])){ // il manque des cases noires	
-		//			printf("Ligne %d : bloc %d (%d) non satisfait (il manque des cases noires)\n", i, k, sequence->seq[k]);
-					return 0;
+					k++;
+					cpt=0;
+				}
+				else{
+					if ((cpt>0) && (cpt < sequence->seq[k])){ // il manque des cases noires	
+			//			printf("Ligne %d : bloc %d (%d) non satisfait (il manque des cases noires)\n", i, k, sequence->seq[k]);
+						return 0;
+					}
 				}
 			}
 		}
@@ -178,29 +177,28 @@ int compare_seq_col(int j, t_matrice* matrice)
 	
 	for (i=0; i<n; i++){
 		if (matrice->mat[i][j] == 2){ // case noire
-			cpt++;
 			if (k>=taille_seqC){ // on a examiné tous les blocs et il y a une case noire en trop
 			//	printf("Colonne %d : bloc %d non satisfait (plus de bloc à examiner et une case noire en trop)", j, k);
 				return 0;
 			}
+			cpt++;
 			if (cpt > sequence->seq[k]){ // trop de cases noires pour le bloc 
 			//	printf("Colonne %d : bloc %d (%d) non satisfait (trop de cases noires)\n", j, k, sequence->seq[k]);
 				return 0;
 			}
 		}
 		else { // case blanche ou non coloriée
-			if (k>=taille_seqC){
-				return 1;
-			}
-			if (cpt == sequence->seq[k]){ // bloc satisfait
-				//printf("Colonne %d : bloc %d (%d) satisfait\n", j, k, sequence->seq[k]);
-				k++;
-				cpt=0;
-			}
-			else{
-				if ((cpt>0) && (cpt < sequence->seq[k])){ // il manque des cases noires
-				//	printf("Colonne %d : bloc %d (%d) non satisfait (il manque des cases noires)\n", j, k, sequence->seq[k]);
-					return 0;
+			if (k<taille_seqC){
+				if (cpt == sequence->seq[k]){ // bloc satisfait
+					//printf("Colonne %d : bloc %d (%d) satisfait\n", j, k, sequence->seq[k]);
+					k++;
+					cpt=0;
+				}
+				else{
+					if ((cpt>0) && (cpt < sequence->seq[k])){ // il manque des cases noires
+					//	printf("Colonne %d : bloc %d (%d) non satisfait (il manque des cases noires)\n", j, k, sequence->seq[k]);
+						return 0;
+					}
 				}
 			}
 		}
@@ -213,49 +211,6 @@ int compare_seq_col(int j, t_matrice* matrice)
 		return 1;
 	}
 }
-
-
-/* fonction qui, étant donné une colonne j entièrement coloriée de matrice, 
-    vérifie si le coloriage respecte bien la séquence seqC
-*/
-
-//int compare_seq_col(int j, t_matrice* matrice)
-//{
-//	int i=0;
-//	int k=0;
-//	int cpt=0;
-//	int n = matrice->n;
-//	t_sequence *sequence = matrice->seqC->sequences[j];
-//	int taille_seqC = sequence->taille;
-//	
-//	for (i=0; i<n; i++){
-//		if (matrice->mat[i][j] == 2){ // case noire
-//			if (k>=taille_seqC){ // blocs en trop
-//				return 0;
-//			}
-//			cpt++;
-//			if (cpt > sequence->seq[k]){ // trop de cases noires pour le bloc 
-//				return 0;
-//			}
-//			if (cpt == sequence->seq[k]){ // bloc satisfait
-//				k++;
-//				cpt = 0;
-//			}
-//		}
-//		else { // case blanche ou non coloriée
-//			if ((cpt>0) && (cpt < sequence->seq[k])){ // il manque des cases noires
-//				return 0;
-//			}
-//		}
-//	}
-//
-//	if ((k == 0) && (taille_seqC>0)){
-//		return 0;
-//	}else{
-//		return 1;
-//	}
-//}
-
 
 int enumeration(int k, int c, t_matrice* matrice)
 {
@@ -299,4 +254,136 @@ int enumeration(int k, int c, t_matrice* matrice)
 		matrice->mat[i][j] = 0;
 	
 	return ok;
+}
+
+t_matrice* initialise_TT(int taille, int k){
+	int i,j;
+	t_matrice *TT = (t_matrice*)malloc(sizeof(t_matrice));
+	TT->n=taille;
+	TT->m=k;
+	TT->mat=(int**)malloc(sizeof(int*)*(TT->n));	
+		
+	for(i=0;i<TT->n;i++){
+		TT->mat[i] = (int*)malloc(sizeof(int)*(TT->m));
+		for(j=0;j<TT->m;j++){
+			TT->mat[i][j]=3;//non visite
+		}
+	}
+	return TT;
+}
+
+int testSiAucunLigne(t_matrice *matrice, int i, int j1, int j2, int couleur)
+{
+	int* V = matrice->mat[i];
+	int j;
+	for(j=j1; j<=j2; j++){
+		if (V[j] == couleur){
+			return 0;
+		}
+	}
+	return 1;
+}
+
+int testSiAucunCol(t_matrice *matrice, int j, int i1, int i2, int couleur)
+{
+	int i;
+	for (i=i1; i<=i2; i++){
+		if (matrice->mat[i][j] == couleur){
+			return 0;
+		}
+	}
+	return 1;
+}
+
+int testVecteurLigne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT)
+{
+	int c1; //cas ou la case j est blanche
+	int c2; //cas ou la case j est noire
+	int L; //L de l
+
+	if(l==-1){
+		return testSiAucunLigne(matrice,i,0,j,2);
+	}
+	
+	L = matrice->seqL->sequences[i]->seq[l];
+	
+	if((l=0)&&(j=L-1)){
+		return testSiAucunLigne(matrice,i,0,j,1);
+	}
+	
+	if(j<=L-1){
+		return 0;
+	}
+	
+	if((TT->mat[j][l])!=3){
+		return TT->mat[j][l];
+	}
+	printf("Diable\n");
+	if(matrice->mat[i][j]==2){
+		c1=0;
+	}
+	else{
+		c1=testVecteurLigne_Rec(matrice,i,j-1,l,TT);
+	}
+	
+	if(!testSiAucunLigne(matrice,i,j-(L-1),j,1)){
+		c2=0;
+	}
+	else{
+		if(matrice->mat[i][j-L]==2){
+			c2=0;
+		}
+		else{
+			c2=testVecteurLigne_Rec(matrice,i,j-L-1,l-1,TT);
+		}
+	}
+
+	TT->mat[j][l]=c1||c2;
+	printf("TT[%d][%d] = %d\n", j, l, TT->mat[j][l]);
+	return TT->mat[j][l];
+}
+
+int testVecteurColonne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT)
+{
+	int c1; //cas ou la case j est blanche
+	int c2; //cas ou la case j est noire
+	int L = matrice->seqC->sequences[j]->seq[l]; //L de l
+	
+	if(l==0){
+		return testSiAucunCol(matrice,j,0,i,2);
+	}
+	
+	if((l==1)&&(i=L-1)){
+		return testSiAucunCol(matrice,j,0,i,1);
+	}
+	
+	if(i<=L-1){
+		return 0;
+	}
+	
+	if(TT->mat[i][j]!=3){
+		return TT->mat[i][j];
+	}
+	
+	if(matrice->mat[i][j]==2){
+		c1=0;
+	}
+	else{
+		c1=testVecteurColonne_Rec(matrice,i-1,j,l,TT);
+	}
+	
+	if(!testSiAucunCol(matrice,j,i-(L-1),i,1)){
+		c2=0;
+	}
+	else{
+		if(matrice->mat[i-L][j]==2){
+			c2=0;
+		}
+		else{
+			c2=testVecteurColonne_Rec(matrice,i-L-1,j,l-1,TT);
+		}
+	}
+	TT->mat[i][l]=c1||c2;
+	printf("TT[%d][%d] = %d\n", i, l, TT->mat[i][l]);
+	return TT->mat[i][l];
 }
