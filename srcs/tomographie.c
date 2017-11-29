@@ -273,6 +273,16 @@ t_matrice* initialise_TT(int nbLignes, int nbColonnes){
 	return TT;
 }
 
+void reinitialise_TT(t_matrice **TT)
+{
+	int i, j;
+	for (i=0; i<(*TT)->n; i++){
+		for (j=0; j<(*TT)->m; j++){
+			(*TT)->mat[i][j] = 3;
+		}
+	}
+}
+
 int testSiAucunLigne(t_matrice *matrice, int i, int j1, int j2, int couleur)
 {
 	int* V = matrice->mat[i];
@@ -301,6 +311,7 @@ int testVecteurLigne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT)
 	int c1; //cas ou la case j est blanche
 	int c2; //cas ou la case j est noire
 	int L; //L de l
+
 
 	if(l==-1){ // séquence vide
 		return testSiAucunLigne(matrice,i,0,j,2);
@@ -403,14 +414,16 @@ int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb)
 	m = matrice->m;
 	TT = initialise_TT(m, matrice->seqL->sequences[i]->taille);
 
-	for (j=m-1; j>=0; j--){
+	for (j=(m-1); j>=0; j--){
 		printf("i=%d, j=%d\n", i, j);
 		if (matrice->mat[i][j] == 0){
 			matrice->mat[i][j] = 1;
-			c1 = testVecteurLigne_Rec(matrice, i, m-1, (matrice->seqL->sequences[i]->taille)-1, TT);
+			c1 = testVecteurLigne_Rec(matrice, i, j, matrice->seqL->sequences[i]->taille-1, TT);
+			reinitialise_TT(&TT);
 			printf("c1 = %d\n", c1);
 			matrice->mat[i][j] = 2;
-			c2 = testVecteurLigne_Rec(matrice, i, m-1, (matrice->seqL->sequences[i]->taille)-1, TT);
+			c2 = testVecteurLigne_Rec(matrice, i, j, matrice->seqL->sequences[i]->taille-1, TT);
+			reinitialise_TT(&TT);
 			printf("c2 = %d\n", c2);
 			matrice->mat[i][j] = 0;
 			if ((!c1) && (!c2)){

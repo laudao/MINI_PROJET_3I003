@@ -26,7 +26,9 @@ int main(int argc, char **argv){
 */
 
 	M.mat[0][5] = 1;
-
+	testVecteurLigne_Rec(&M, 0, (M.m)-1, M.seqL->sequences[0]->taille-1, TT);
+	reinitialise_TT(&TT);
+	M.mat[0][5] = 2;
 	if (testVecteurLigne_Rec(&M, 0, (M.m)-1, M.seqL->sequences[0]->taille-1, TT) == 1)
 		printf("OK\n");
 	else

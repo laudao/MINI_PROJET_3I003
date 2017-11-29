@@ -40,6 +40,8 @@ void affiche_matrice(t_matrice *matrice);
 
 t_matrice* initialise_TT(int nbLignes, int nbColonnes);
 
+void reinitialise_TT(t_matrice** TT);
+
 /* teste s'il n'existe aucune case de couleur couleur entre les cases
     j1 et j2 de la ligne i de la matrice */
 int testSiAucunLigne(t_matrice *matrice, int i, int j1, int j2, int couleur);
