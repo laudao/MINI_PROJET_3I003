@@ -24,7 +24,7 @@ typedef struct matrice{
 } t_matrice;
 
 
-void fichierEnTableau(char* s, t_matrice* matrice, t_ens_sequences* seqL, t_ens_sequences* seqC);
+void fichierEnTableau(char* s, t_matrice* matrice);
 
 /* fonction qui, étant donné une ligne i entièrement coloriée de matrice,
      vérifie si le coloriage respecte bien la séquence de la ligne */
@@ -51,5 +51,11 @@ int testSiAucunCol(t_matrice *matrice, int j, int i1, int i2, int couleur);
 int testVecteurLigne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT);
 
 int testVecteurColonne_Rec(t_matrice* matrice, int j, int i, int l, t_matrice *TT);
+
+int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb);
+
+int propagCol(t_matrice* matrice, int j, int* marqueL, int *nb);
+
+int propagation(t_matrice *matrice);
 
 #endif
