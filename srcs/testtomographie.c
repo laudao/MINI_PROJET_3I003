@@ -25,11 +25,11 @@ int main(int argc, char **argv){
 		printf("Non coloriée\n");
 */
 
-	M.mat[0][5] = 1;
-	testVecteurLigne_Rec(&M, 0, (M.m)-1, M.seqL->sequences[0]->taille-1, TT);
+	M.mat[0][4] = 1;
+	testVecteurLigne_Rec(&M, 0, 4, M.seqL->sequences[0]->taille-1, TT);
 	reinitialise_TT(&TT);
-	M.mat[0][5] = 2;
-	if (testVecteurLigne_Rec(&M, 0, (M.m)-1, M.seqL->sequences[0]->taille-1, TT) == 1)
+	M.mat[0][4] = 2;
+	if (testVecteurLigne_Rec(&M, 0, 4, M.seqL->sequences[0]->taille-1, TT) == 1)
 		printf("OK\n");
 	else
 		printf("KO\n");

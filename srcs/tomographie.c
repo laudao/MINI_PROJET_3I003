@@ -318,7 +318,6 @@ int testVecteurLigne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT)
 	} 
 	
 	L = matrice->seqL->sequences[i]->seq[l]; // nombre de cases dans le bloc l de la séquence de la ligne i
-	printf("L : %d, j=%d\n", L, j);
 	if((l==0)&&(j==L-1)){
 		return testSiAucunLigne(matrice,i,0,j,1);
 	}
@@ -350,7 +349,6 @@ int testVecteurLigne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT)
 		}
 	}
 
-	printf("c1 : %d, c2 : %d\n", c1, c2);
 	TT->mat[j][l]=c1||c2;
 	return TT->mat[j][l];
 }
@@ -372,7 +370,6 @@ int testVecteurColonne_Rec(t_matrice* matrice, int j, int i, int l, t_matrice *T
 	}
 	
 	if(i<=L-1){
-		printf("Diable\n");
 		return 0;
 	}
 	
@@ -408,6 +405,9 @@ int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb)
  	int c1, c2;
  	int cptcolor;
  	int m;
+	int l;
+
+	l = matrice->seqL->sequences[i]->taille-1;
  	t_matrice* TT;
  	cptcolor = 0;
  	(*nb) = 0;
@@ -415,19 +415,16 @@ int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb)
 	TT = initialise_TT(m, matrice->seqL->sequences[i]->taille);
 
 	for (j=(m-1); j>=0; j--){
-		printf("i=%d, j=%d\n", i, j);
 		if (matrice->mat[i][j] == 0){
 			matrice->mat[i][j] = 1;
-			c1 = testVecteurLigne_Rec(matrice, i, j, matrice->seqL->sequences[i]->taille-1, TT);
+			c1 = testVecteurLigne_Rec(matrice, i, m-1, l, TT);
 			reinitialise_TT(&TT);
-			printf("c1 = %d\n", c1);
+			affiche_matrice(TT);
 			matrice->mat[i][j] = 2;
-			c2 = testVecteurLigne_Rec(matrice, i, j, matrice->seqL->sequences[i]->taille-1, TT);
+			c2 = testVecteurLigne_Rec(matrice, i, m-1, l, TT);
 			reinitialise_TT(&TT);
-			printf("c2 = %d\n", c2);
 			matrice->mat[i][j] = 0;
 			if ((!c1) && (!c2)){
-				printf("j : %d\n", j);
 				return 0;
 			}
 			if ((c1) && (!c2)){
@@ -448,6 +445,7 @@ int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb)
 			}
 		}
  	}
+ 	affiche_matrice(matrice);
  	return 1;
 }
 
@@ -467,11 +465,12 @@ int propagCol(t_matrice* matrice, int j, int* marqueL, int *nb)
 		if (matrice->mat[i][j] == 0){
 			matrice->mat[i][j] = 1;
 			c1 = testVecteurColonne_Rec(matrice, j, n-1, matrice->seqC->sequences[j]->taille-1, TT);
+			reinitialise_TT(&TT);
 			matrice->mat[i][j] = 2;
 			c2 = testVecteurColonne_Rec(matrice, j, n-1, matrice->seqC->sequences[j]->taille-1, TT);
+			reinitialise_TT(&TT);
 			matrice->mat[i][j] = 0;
 			if ((!c1) && (!c2)){
-				printf("i=%d j=%d\n", i, j);
 				return 0;
 			}
 			if ((c1) && (!c2)){
@@ -516,9 +515,11 @@ int propagation(t_matrice *matrice)
 
 	nbmL = n;
 	nbmC = m;
-
+	j=0;
+	printf("n = %d m = %d\n", n, m);
 	while ((ok) && ((nbmL != 0) || (nbmC != 0))){
-		i=0;
+		i = 0;
+		j = 0;
 		while ((ok) && (i<n)){
 			if (marqueL[i]){
 				ok = propagLigne(matrice, i, marqueC, &nb);

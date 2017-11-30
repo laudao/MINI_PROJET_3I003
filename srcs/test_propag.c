@@ -15,6 +15,7 @@ int main(int argc, char **argv){
 	fichierEnTableau(nameFile,&M);
 	if (propagation(&M)){
 		printf("Tayo tayo!\n");
+		affiche_matrice(&M);
 	}else{
 		printf("Oula!!\n");
 	}
