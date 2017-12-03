@@ -2,17 +2,18 @@
 #include "tomographie.h"
 
 int main(int argc, char **argv){
-
+	char* nameFile;
+	t_matrice M;
+	
 	if (argc != 2){
-		printf("Erreur");
+		printf("Usage: %s <instances/fichier>\n", argv[0]);
 		return 1;
 	}
 	
-	char* nameFile = strdup(argv[1]);
-	
-	t_matrice M;
+	nameFile = strdup(argv[1]);
 
 	fichierEnTableau(nameFile,&M);
+
 	if (propagation(&M)){
 		printf("Tayo tayo!\n");
 		affiche_matrice(&M);
