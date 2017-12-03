@@ -1,6 +1,5 @@
 #include "tomographie.h"
 
-
 // fonction qui lit le contenu du fichiers et qui initialise la matrice avec le tableau des sequences des lignes
 void fichierEnTableau(char* s, t_matrice* matrice){
 	int taille_seqC=0;
@@ -19,10 +18,10 @@ void fichierEnTableau(char* s, t_matrice* matrice){
 	}
 
 	n = GetEntier(f);
-	printf("%d\n", n);
+//	printf("%d\n", n);
 	Skip(f);
 	m = GetEntier(f);
-	printf("%d\n", m);
+//	printf("%d\n", m);
 	SkipLine(f);
 
 	matrice->n=n;
@@ -44,23 +43,21 @@ void fichierEnTableau(char* s, t_matrice* matrice){
 		}
 	}
 
-	//affichage de la matrice
-	printf("Oh surprise voici la matrice non coloriee !\n");
-	for(i=0;i<n;i++){
-		for(j=0;j<m;j++){
-			printf("%d ",matrice->mat[i][j]);
-		}
-		printf("\n");
-	}
+//	//affichage de la matrice
+//	printf("Oh surprise voici la matrice non coloriee !\n");
+//	for(i=0;i<n;i++){
+//		for(j=0;j<m;j++){
+//			printf("%d ",matrice->mat[i][j]);
+//		}
+//		printf("\n");
+//	}
 	
-	printf("\n");
 	//initialisation du tableau des seq des lignes avec les valeurs lues dans le fichier et affichage sur le flux de sortie
-
 
 	matrice->seqL->sequences=(t_sequence**)malloc(sizeof(t_sequence*)*n);
 	matrice->seqL->taille=n;
 
-	printf("Diable voici le tableau des sequences des lignes!\n");
+//	printf("Diable voici le tableau des sequences des lignes!\n");
 	for(i=0;i<n;i++){ // pour chaque ligne de la matrice 
 		taille_seqL= GetEntier(f); // taille de la séquence de la ligne i
 		matrice->seqL->sequences[i]=(t_sequence*)malloc(sizeof(t_sequence)); 
@@ -71,19 +68,19 @@ void fichierEnTableau(char* s, t_matrice* matrice){
 			Skip(f);
 			for(l=0;l<taille_seqL;l++){ // pour chaque bloc de la séquence 
 				matrice->seqL->sequences[i]->seq[l]=GetEntier(f);
-				printf("%d ",matrice->seqL->sequences[i]->seq[l]);
+	//			printf("%d ",matrice->seqL->sequences[i]->seq[l]);
 				Skip(f);
 			}
 		}
-		printf("\n");
+//		printf("\n");
 	}
 	
-	printf("\n");
+//	printf("\n");
 //initialisation du tableau des seq des colonnes avec les valeurs lues dans le fichier et affichage sur le flux de sortie
 	
 	matrice->seqC->sequences=(t_sequence**)malloc(sizeof(t_sequence*)*m);
 	matrice->seqC->taille=m;
-	printf("Oh WTF ! voici le tableau des sequences des colonnes!\n");
+	//printf("Oh WTF ! voici le tableau des sequences des colonnes!\n");
 
 	for(j=0;j<m;j++){
 		taille_seqC= GetEntier(f);
@@ -96,12 +93,12 @@ void fichierEnTableau(char* s, t_matrice* matrice){
 			Skip(f); 
 			for(l=0;l<taille_seqC;l++){ // pour chaque bloc de la séquence 
 				matrice->seqC->sequences[j]->seq[l]=GetEntier(f);
-				printf("%d ",matrice->seqC->sequences[j]->seq[l]);
+	//			printf("%d ",matrice->seqC->sequences[j]->seq[l]);
 				Skip(f);
 			}
 		}
 
-		printf("\n"); 
+		//printf("\n"); 
 	} 
 	
 	if (f)
@@ -129,29 +126,33 @@ int compare_seq_ligne(int i, t_matrice* matrice)
 	int m = matrice->m;
 	t_sequence *sequence = matrice->seqL->sequences[i];
 	int taille_seqL = sequence->taille;
-	
+
+	if (taille_seqL == 0)
+		return 1;
+
 	for (j=0; j<m; j++){
+//		printf("(%d, %d) : %d\n", i, j, matrice->mat[i][j]);
 		if (matrice->mat[i][j] == 2){ // case noire
 			if (k>=taille_seqL){ // on a examiné tous les blocs et il y a une case noire en trop
-//				printf("Ligne %d : bloc %d (%d) non satisfait (plus de bloc à examiner et une case noire en trop)\n", i, k, sequence->seq[k]);
+	//			printf("Ligne %d : bloc %d (%d) non satisfait (plus de bloc à examiner et une case noire en trop)\n", i, k, sequence->seq[k]);
 				return 0;
 			}
 			cpt++;
 			if (cpt > sequence->seq[k]){ // trop de cases noires pour le bloc 
-	//			printf("Ligne %d : bloc %d (%d) non satisfait (trop de cases noires)\n", i, k, sequence->seq[k]);
+		//		printf("Ligne %d : bloc %d (%d) non satisfait à la case %d(trop de cases noires)\n", i, k, sequence->seq[k], j);
 				return 0;
 			}
 		}
 		else { // case blanche ou non coloriée
 			if (k<taille_seqL){
 				if (cpt == sequence->seq[k]){ // bloc satisfait
-	//			printf("Ligne %d : bloc %d (%d) satisfait\n", i, k, sequence->seq[k]);
+			//		printf("Ligne %d : bloc %d (%d) satisfait\n", i, k, sequence->seq[k]);
 					k++;
 					cpt=0;
 				}
 				else{
 					if ((cpt>0) && (cpt < sequence->seq[k])){ // il manque des cases noires	
-			//			printf("Ligne %d : bloc %d (%d) non satisfait (il manque des cases noires)\n", i, k, sequence->seq[k]);
+				//		printf("Ligne %d : bloc %d (%d) non satisfait (il manque des cases noires)\n", i, k, sequence->seq[k]);
 						return 0;
 					}
 				}
@@ -159,12 +160,21 @@ int compare_seq_ligne(int i, t_matrice* matrice)
 		}
 	}
 
+	if ((k == taille_seqL-1) && (cpt == sequence->seq[k]))
+		return 1;
+
+	if (k<taille_seqL){
+	//	printf("Ligne %d : il manque au moins un bloc\n", i);
+		return 0;
+	}
+
 	if ((k == 0) && (taille_seqL>0)){ // aucun bloc colorié mais séquence contient au moins un bloc
 		//printf("Ligne %d : bloc %d (%d) non satisfait (aucun bloc colorié)\n", i, k, sequence->seq[k]);
 		return 0;
-	}else{
-		return 1;
 	}
+
+	return 1;
+	
 }
 
 int compare_seq_col(int j, t_matrice* matrice)
@@ -176,10 +186,13 @@ int compare_seq_col(int j, t_matrice* matrice)
 	t_sequence *sequence = matrice->seqC->sequences[i];
 	int taille_seqC = sequence->taille;
 	
+	if (taille_seqC == 0)
+		return 1;
+
 	for (i=0; i<n; i++){
 		if (matrice->mat[i][j] == 2){ // case noire
 			if (k>=taille_seqC){ // on a examiné tous les blocs et il y a une case noire en trop
-			//	printf("Colonne %d : bloc %d non satisfait (plus de bloc à examiner et une case noire en trop)", j, k);
+		//		printf("Colonne %d : bloc %d non satisfait (plus de bloc à examiner et une case noire en trop)\n", j, k);
 				return 0;
 			}
 			cpt++;
@@ -191,7 +204,7 @@ int compare_seq_col(int j, t_matrice* matrice)
 		else { // case blanche ou non coloriée
 			if (k<taille_seqC){
 				if (cpt == sequence->seq[k]){ // bloc satisfait
-					//printf("Colonne %d : bloc %d (%d) satisfait\n", j, k, sequence->seq[k]);
+				//	printf("Colonne %d : bloc %d (%d) satisfait\n", j, k, sequence->seq[k]);
 					k++;
 					cpt=0;
 				}
@@ -205,8 +218,16 @@ int compare_seq_col(int j, t_matrice* matrice)
 		}
 	}
 
+	if ((k == taille_seqC-1) && (cpt == sequence->seq[k]))
+		return 1;
+
+	if (k<taille_seqC){
+	//	printf("Ligne %d : il manque au moins un bloc\n", i);
+		return 0;
+	}
+
 	if ((k == 0) && (taille_seqC>0)){ // aucun bloc colorié mais séquence contient au moins un bloc
-	//	printf("Colonne %d : bloc %d (%d) non satisfait (aucun bloc colorié)\n", j, k, sequence->seq[k]);
+//		printf("Colonne %d : bloc %d (%d) non satisfait (aucun bloc colorié)\n", j, k, sequence->seq[k]);
 		return 0;
 	}else{
 		return 1;
@@ -225,8 +246,6 @@ int enumeration(int k, int c, t_matrice* matrice)
 
 	i = floor(k/m);
 	j = k % m;
-
-	printf("i : %d  j: %d n*m : %d\n", i, j, n*m);
 
 	if (matrice->mat[i][j] == 0){
 		matrice->mat[i][j] = c;
@@ -247,13 +266,15 @@ int enumeration(int k, int c, t_matrice* matrice)
 		ok = compare_seq_ligne(i, matrice);
 	
 	if (ok){
-		if ((i == n-1) && (j == m-1))
+		if ((i == n-1) && (j == m-1)){
 			return 1;
-		ok = ((enumeration(k+1, 1, matrice)) + (enumeration(k+1, 2, matrice)));
+		}
+		ok = (enumeration(k+1, 1, matrice)) || (enumeration(k+1, 2, matrice));
 	}
-	if ((!ok) && (raz))
+
+	if ((!ok) && (raz)){
 		matrice->mat[i][j] = 0;
-	
+	}
 	return ok;
 }
 
