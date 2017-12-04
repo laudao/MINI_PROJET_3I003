@@ -127,7 +127,7 @@ int compare_seq_ligne(int i, t_matrice* matrice)
 	t_sequence *sequence = matrice->seqL->sequences[i];
 	int taille_seqL = sequence->taille;
 
-	if (taille_seqL == 0)
+	if ((taille_seqL == 0) && (matrice->m==1))
 		return 1;
 
 	for (j=0; j<m; j++){
@@ -186,7 +186,7 @@ int compare_seq_col(int j, t_matrice* matrice)
 	t_sequence *sequence = matrice->seqC->sequences[i];
 	int taille_seqC = sequence->taille;
 	
-	if (taille_seqC == 0)
+	if ((taille_seqC == 0) && (matrice->n==1))
 		return 1;
 
 	for (i=0; i<n; i++){
@@ -332,7 +332,8 @@ int testVecteurLigne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT)
 	int c1; //cas ou la case j est blanche
 	int c2; //cas ou la case j est noire
 	int L; //L de l
-
+	printf("l: %d\n", l);
+	printf("j: %d\n", j);
 
 	if(l==-1){ // séquence vide
 		return testSiAucunLigne(matrice,i,0,j,2);
@@ -369,7 +370,6 @@ int testVecteurLigne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT)
 			c2=testVecteurLigne_Rec(matrice,i,j-L-1,l-1,TT);
 		}
 	}
-
 	TT->mat[j][l]=c1||c2;
 	return TT->mat[j][l];
 }
@@ -444,6 +444,7 @@ int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb)
 			c2 = testVecteurLigne_Rec(matrice, i, m-1, l, TT);
 			reinitialise_TT(&TT);
 			matrice->mat[i][j] = 0;
+			
 			if ((!c1) && (!c2)){
 				return 0;
 			}
@@ -463,7 +464,6 @@ int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb)
 					(*nb)++;
 				}
 			}
-			printf("M[%d][%d] = %d\n", i, j, matrice->mat[i][j]);
 		}
  	}
  	return 1;
@@ -483,7 +483,9 @@ int propagCol(t_matrice* matrice, int j, int* marqueL, int *nb)
 	TT = initialise_TT(n, matrice->seqC->sequences[j]->taille);
 
 	l = matrice->seqC->sequences[j]->taille-1;
-
+	
+	if (l == -1)
+		return 1;
 
 	for (i=n-1; i>=0; i--){
 		if (matrice->mat[i][j] == 0){
@@ -513,6 +515,7 @@ int propagCol(t_matrice* matrice, int j, int* marqueL, int *nb)
 					(*nb)++;
 				}
 			}
+
 		}
  	}
  	return 1;
@@ -593,6 +596,7 @@ void completer_coloriage(t_matrice *matrice)
 {
 	int i, j;
 	int n, m;
+	int res;
 
 	n = matrice->n;
 	m = matrice->m;
@@ -600,7 +604,7 @@ void completer_coloriage(t_matrice *matrice)
 	for (i=0; i<n; i++){
 		for (j=0; j<m; j++){
 			if (matrice->mat[i][j] == 0){
-				enumeration((i*n)+j, 1, matrice)||enumeration((i*n)+j,2, matrice);
+				res = enumeration((i*n)+j, 1, matrice)||enumeration((i*n)+j,2, matrice);
 			}
 		}
 	}
