@@ -17,6 +17,9 @@ int main(int argc, char **argv){
 	if (propagation(&M)){
 		printf("Tayo tayo!\n");
 		affiche_matrice(&M);
+		printf("Nombre de cases non coloriees: %d\n", pourcentage_coloriees(&M));
+		completer_coloriage(&M);
+		affiche_matrice(&M);
 	}else{
 		printf("Oula!!\n");
 	}

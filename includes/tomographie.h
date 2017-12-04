@@ -60,4 +60,7 @@ int propagCol(t_matrice* matrice, int j, int* marqueL, int *nb);
 
 int propagation(t_matrice *matrice);
 
+int pourcentage_coloriees(t_matrice* matrice);
+
+void completer_coloriage(t_matrice *matrice);
 #endif
