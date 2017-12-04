@@ -440,7 +440,6 @@ int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb)
 			matrice->mat[i][j] = 1;
 			c1 = testVecteurLigne_Rec(matrice, i, m-1, l, TT);
 			reinitialise_TT(&TT);
-			affiche_matrice(TT);
 			matrice->mat[i][j] = 2;
 			c2 = testVecteurLigne_Rec(matrice, i, m-1, l, TT);
 			reinitialise_TT(&TT);
@@ -464,9 +463,9 @@ int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb)
 					(*nb)++;
 				}
 			}
+			printf("M[%d][%d] = %d\n", i, j, matrice->mat[i][j]);
 		}
  	}
- 	affiche_matrice(matrice);
  	return 1;
 }
 
@@ -476,19 +475,23 @@ int propagCol(t_matrice* matrice, int j, int* marqueL, int *nb)
  	int c1, c2;
  	int cptcolor;
  	int n;
+	int l;
  	t_matrice* TT;
  	cptcolor = 0;
  	*nb = 0;
 	n = matrice->n;
 	TT = initialise_TT(n, matrice->seqC->sequences[j]->taille);
 
+	l = matrice->seqC->sequences[j]->taille-1;
+
+
 	for (i=n-1; i>=0; i--){
 		if (matrice->mat[i][j] == 0){
 			matrice->mat[i][j] = 1;
-			c1 = testVecteurColonne_Rec(matrice, j, n-1, matrice->seqC->sequences[j]->taille-1, TT);
+			c1 = testVecteurColonne_Rec(matrice, j, n-1, l, TT);
 			reinitialise_TT(&TT);
 			matrice->mat[i][j] = 2;
-			c2 = testVecteurColonne_Rec(matrice, j, n-1, matrice->seqC->sequences[j]->taille-1, TT);
+			c2 = testVecteurColonne_Rec(matrice, j, n-1, l, TT);
 			reinitialise_TT(&TT);
 			matrice->mat[i][j] = 0;
 			if ((!c1) && (!c2)){
@@ -540,7 +543,6 @@ int propagation(t_matrice *matrice)
 	printf("n = %d m = %d\n", n, m);
 	while ((ok) && ((nbmL != 0) || (nbmC != 0))){
 		i = 0;
-		j = 0;
 		while ((ok) && (i<n)){
 			if (marqueL[i]){
 				ok = propagLigne(matrice, i, marqueC, &nb);
@@ -550,6 +552,7 @@ int propagation(t_matrice *matrice)
 			}
 			i++;
 		}
+		j=0;
 		while ((ok) && (j<m)){
 			if (marqueC[j]){
 				ok = propagCol(matrice, j, marqueL, &nb);
@@ -560,5 +563,45 @@ int propagation(t_matrice *matrice)
 			j++;
 		}
 	}
+	printf("nb = %d\n", nb);
+	printf("nbmL = %d\n", nbmL);
+	printf("nbmC = %d\n", nbmC);
 	return ok;
+}
+
+int pourcentage_coloriees(t_matrice* matrice)
+{
+	int i, j;
+	int n, m;
+	int cpt;
+
+	cpt=0;
+	n = matrice->n;
+	m = matrice->m;
+
+	for (i=0; i<n; i++){
+		for (j=0; j<m; j++){
+			if (matrice->mat[i][j] == 0){
+				cpt++;
+			}
+		}
+	}
+	return cpt;
+}
+
+void completer_coloriage(t_matrice *matrice)
+{
+	int i, j;
+	int n, m;
+
+	n = matrice->n;
+	m = matrice->m;
+
+	for (i=0; i<n; i++){
+		for (j=0; j<m; j++){
+			if (matrice->mat[i][j] == 0){
+				enumeration((i*n)+j, 1, matrice)||enumeration((i*n)+j,2, matrice);
+			}
+		}
+	}
 }
