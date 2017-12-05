@@ -1,0 +1,5 @@
+plot "temps_testVecteurLigne" using 1:2 with lines
+set term postscript portrait
+set output "Temps_testVecteurLigne.ps"
+set size 0.7, 0.7
+replot

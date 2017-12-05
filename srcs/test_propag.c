@@ -18,7 +18,7 @@ int main(int argc, char **argv){
 		printf("Tayo tayo!\n");
 		affiche_matrice(&M);
 		printf("Nombre de cases non coloriees: %d\n", pourcentage_coloriees(&M));
-		enumeration(0, 1, &M)||enumeration(0, 2, &M);
+		//enumeration(0, 1, &M)||enumeration(0, 2, &M);
 		affiche_matrice(&M);
 	}else{
 		printf("Oula!!\n");

@@ -332,8 +332,7 @@ int testVecteurLigne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT)
 	int c1; //cas ou la case j est blanche
 	int c2; //cas ou la case j est noire
 	int L; //L de l
-	printf("l: %d\n", l);
-	printf("j: %d\n", j);
+
 
 	if(l==-1){ // séquence vide
 		return testSiAucunLigne(matrice,i,0,j,2);
@@ -591,7 +590,7 @@ int pourcentage_coloriees(t_matrice* matrice)
 	}
 	return cpt;
 }
-
+/*
 void completer_coloriage(t_matrice *matrice)
 {
 	int i, j;
@@ -608,4 +607,4 @@ void completer_coloriage(t_matrice *matrice)
 			}
 		}
 	}
-}
+}*/

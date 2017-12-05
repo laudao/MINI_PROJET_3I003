@@ -13,11 +13,11 @@ int main(){
 	double temps_cpu;
 
 //	char *instances[] = {"testLigne.tom", "instances/vec_35.tom"};
-	char *instances[] = {"instances/vec_100.tom", "instances/vec_40.tom","instances/vec_1000.tom","instances/vec_40000.tom","instances/vec_10000.tom", "instances/vec_45.tom","instances/vec_100000.tom","instances/vec_50.tom","instances/vec_100000_0.tom", "instances/vec_50000.tom","instances/vec_110000.tom", "instances/vec_55.tom","instances/vec_120000.tom","instances/vec_60.tom","instances/vec_20.tom","instances/vec_60000.tom","instances/vec_20000.tom","instances/vec_70000.tom","instances/vec_30.tom","instances/vec_80000.tom","instances/vec_30000.tom","instances/vec_90000.tom","instances/vec_35.tom"};
+	char *instances[] = {"instances/vec_20.tom","instances/vec_30.tom","instances/vec_35.tom","instances/vec_40.tom","instances/vec_45.tom","instances/vec_50.tom","instances/vec_55.tom","instances/vec_60.tom","instances/vec_100.tom","instances/vec_1000.tom","instances/vec_10000.tom","instances/vec_20000.tom","instances/vec_30000.tom","instances/vec_40000.tom","instances/vec_50000.tom","instances/vec_60000.tom","instances/vec_70000.tom","instances/vec_80000.tom","instances/vec_90000.tom","instances/vec_100000.tom","instances/vec_100000_0.tom","instances/vec_110000.tom","instances/vec_120000.tom"};
 	
-	f_temps_vecteur = fopen("temps_testVecteurLigne", "w");
 
 	for (i=0; i<23; i++){
+		f_temps_vecteur = fopen("temps_testVecteurLigne", "a");
 		M = (t_matrice*)malloc(sizeof(t_matrice));
 		fichierEnTableau(instances[i] , M);
 		l = M->seqL->sequences[0]->taille;
@@ -35,6 +35,7 @@ int main(){
 		fprintf(f_temps_vecteur, "%d %f\n", M->m, temps_cpu);
 		free(TT);
 		free(M);
+		fclose(f_temps_vecteur);
 	}
 
 	return 0;
