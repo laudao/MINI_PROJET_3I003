@@ -590,7 +590,7 @@ int pourcentage_coloriees(t_matrice* matrice)
 	}
 	return cpt;
 }
-/*
+
 void completer_coloriage(t_matrice *matrice)
 {
 	int i, j;
@@ -604,7 +604,10 @@ void completer_coloriage(t_matrice *matrice)
 		for (j=0; j<m; j++){
 			if (matrice->mat[i][j] == 0){
 				res = enumeration((i*n)+j, 1, matrice)||enumeration((i*n)+j,2, matrice);
+				if (res){
+					printf("Coloriage complété pour la case (%d, %d)\n", i, j);
+				}
 			}
 		}
 	}
-}*/
+}
