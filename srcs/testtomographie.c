@@ -12,12 +12,15 @@ int main(int argc, char **argv){
 
 	t_matrice M;
 //	t_matrice* TT;
+	double pourcentage;
 
 	fichierEnTableau(nameFile,&M); //&seqL,&seqC);
-	affiche_matrice(&M);
-	if (propagation(&M)){
+	if (propagation(&M, &pourcentage)){
 		printf("Matrice coloriée\n");
 	}
+	affiche_matrice(&M);
+	printf("\n");
+	completer_coloriage(&M);
 	affiche_matrice(&M);
 //	printf("taille séquence : %d\n", seqC.sequences[0]->taille);
 //	TT = initialise_TT(M.m, M.seqL->sequences[0]->taille);
