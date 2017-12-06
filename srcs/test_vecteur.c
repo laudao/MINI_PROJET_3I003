@@ -12,7 +12,6 @@ int main(){
 	clock_t temps_final;
 	double temps_cpu;
 
-//	char *instances[] = {"testLigne.tom", "instances/vec_35.tom"};
 	char *instances[] = {"instances/vec_20.tom","instances/vec_30.tom","instances/vec_35.tom","instances/vec_40.tom","instances/vec_45.tom","instances/vec_50.tom","instances/vec_55.tom","instances/vec_60.tom","instances/vec_100.tom","instances/vec_1000.tom","instances/vec_10000.tom","instances/vec_20000.tom","instances/vec_30000.tom","instances/vec_40000.tom","instances/vec_50000.tom","instances/vec_60000.tom","instances/vec_70000.tom","instances/vec_80000.tom","instances/vec_90000.tom","instances/vec_100000.tom","instances/vec_100000_0.tom","instances/vec_110000.tom","instances/vec_120000.tom"};
 	
 

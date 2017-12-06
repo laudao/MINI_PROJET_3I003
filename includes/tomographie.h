@@ -24,6 +24,9 @@ typedef struct matrice{
 } t_matrice;
 
 
+/* fonction qui lit le contenu du fichier et qui initialise la matrice avec le tableau 
+   des séquences des lignes 
+*/
 void fichierEnTableau(char* s, t_matrice* matrice);
 
 /* fonction qui, étant donné une ligne i entièrement coloriée de matrice,
@@ -40,6 +43,7 @@ void affiche_matrice(t_matrice *matrice);
 
 t_matrice* initialise_TT(int nbLignes, int nbColonnes);
 
+/* ré-initialise la matrice TT avec la valeur 3 (non visité) */
 void reinitialise_TT(t_matrice** TT);
 
 /* teste s'il n'existe aucune case de couleur couleur entre les cases
@@ -54,13 +58,13 @@ int testVecteurLigne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT)
 
 int testVecteurColonne_Rec(t_matrice* matrice, int j, int i, int l, t_matrice *TT);
 
-int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb);
+int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb, int *cptcolor);
 
-int propagCol(t_matrice* matrice, int j, int* marqueL, int *nb);
+int propagCol(t_matrice* matrice, int j, int* marqueL, int *nb, int *cptcolor);
 
-int propagation(t_matrice *matrice);
+int propagation(t_matrice *matrice, double* pourcentage);
 
-int pourcentage_coloriees(t_matrice* matrice);
-
+/* complète avec la fonction enumeration le coloriage */
 void completer_coloriage(t_matrice *matrice);
+
 #endif
