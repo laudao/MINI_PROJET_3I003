@@ -419,17 +419,17 @@ int testVecteurColonne_Rec(t_matrice* matrice, int j, int i, int l, t_matrice *T
 	return TT->mat[i][l];
 }
 
-int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb)
+int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb, int *cptcolor)
 {
 	int j;
  	int c1, c2;
- 	int cptcolor;
+ 	//int cptcolor;
  	int m;
 	int l;
 
 	l = matrice->seqL->sequences[i]->taille-1;
  	t_matrice* TT;
- 	cptcolor = 0;
+ 	*cptcolor = 0;
  	(*nb) = 0;
 	m = matrice->m;
 	TT = initialise_TT(m, matrice->seqL->sequences[i]->taille);
@@ -449,15 +449,15 @@ int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb)
 			}
 			if ((c1) && (!c2)){
 				matrice->mat[i][j] = 1;	
-				cptcolor++;
+				(*cptcolor)++;
 				if (!marqueC[j]){
 					marqueC[j] = 1;
 					(*nb)++;
 				}
 			}
-			if ((!c1) && (c2)){
+			if (((!c1) && (c2)) || ((c2) &&(matrice->n==1))){
 				matrice->mat[i][j] = 2;
-				cptcolor++;
+				(*cptcolor)++;
 				if (!marqueC[j]){
 					marqueC[j] = 1;
 					(*nb)++;
@@ -468,25 +468,23 @@ int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb)
  	return 1;
 }
 
-int propagCol(t_matrice* matrice, int j, int* marqueL, int *nb)
+int propagCol(t_matrice* matrice, int j, int* marqueL, int *nb, int *cptcolor)
 {
 	int i;
  	int c1, c2;
- 	int cptcolor;
+ 	//int cptcolor;
  	int n;
 	int l;
  	t_matrice* TT;
- 	cptcolor = 0;
+ 	
+ 	*cptcolor = 0;
  	*nb = 0;
 	n = matrice->n;
 	TT = initialise_TT(n, matrice->seqC->sequences[j]->taille);
 
 	l = matrice->seqC->sequences[j]->taille-1;
-	
-	if (l == -1)
-		return 1;
 
-	for (i=n-1; i>=0; i--){
+	for (i=0; i<n; i++){
 		if (matrice->mat[i][j] == 0){
 			matrice->mat[i][j] = 1;
 			c1 = testVecteurColonne_Rec(matrice, j, n-1, l, TT);
@@ -500,7 +498,7 @@ int propagCol(t_matrice* matrice, int j, int* marqueL, int *nb)
 			}
 			if ((c1) && (!c2)){
 				matrice->mat[i][j] = 1;
-				cptcolor++;
+				(*cptcolor)++;
 				if (!marqueL[i]){
 					marqueL[i] = 1;
 					(*nb)++;
@@ -508,15 +506,15 @@ int propagCol(t_matrice* matrice, int j, int* marqueL, int *nb)
 			}
 			if ((!c1) && (c2)){
 				matrice->mat[i][j] = 2;
-				cptcolor++;
+				(*cptcolor)++;
 				if (!marqueL[i]){
 					marqueL[i] = 1;
 					(*nb)++;
 				}
 			}
-
 		}
  	}
+ 	
  	return 1;
 }
 
@@ -527,6 +525,7 @@ int propagation(t_matrice *matrice)
 	int i, j;
 	int ok;
 	int n, m;
+	int cptcolor, cpt;
 
 	n = matrice->n;
 	m = matrice->m;
@@ -539,6 +538,9 @@ int propagation(t_matrice *matrice)
 	for (j=0; j<m; j++)
 		marqueC[j] = 1;
 
+	nb = 0;
+	cptcolor = 0;
+	cpt = 0;
 	nbmL = n;
 	nbmC = m;
 	j=0;
@@ -547,8 +549,9 @@ int propagation(t_matrice *matrice)
 		i = 0;
 		while ((ok) && (i<n)){
 			if (marqueL[i]){
-				ok = propagLigne(matrice, i, marqueC, &nb);
+				ok = propagLigne(matrice, i, marqueC, &nb, &cptcolor);
 				nbmC += nb;
+				cpt += cptcolor;
 				marqueL[i] = 0;
 				nbmL--;
 			}
@@ -557,17 +560,16 @@ int propagation(t_matrice *matrice)
 		j=0;
 		while ((ok) && (j<m)){
 			if (marqueC[j]){
-				ok = propagCol(matrice, j, marqueL, &nb);
+				ok = propagCol(matrice, j, marqueL, &nb, &cptcolor);
 				nbmL += nb;
+				cpt += cptcolor;
 				marqueC[j] = 0;
 				nbmC--;
 			}
 			j++;
 		}
 	}
-	printf("nb = %d\n", nb);
-	printf("nbmL = %d\n", nbmL);
-	printf("nbmC = %d\n", nbmC);
+	printf("pourcentage de cases coloriées : %f\n", 100*((cpt*1.0)/(n*m)));
 	return ok;
 }
 

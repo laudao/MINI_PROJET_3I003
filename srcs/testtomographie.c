@@ -14,16 +14,21 @@ int main(int argc, char **argv){
 //	t_matrice* TT;
 
 	fichierEnTableau(nameFile,&M); //&seqL,&seqC);
+	affiche_matrice(&M);
+	if (propagation(&M)){
+		printf("Matrice coloriée\n");
+	}
+	affiche_matrice(&M);
 //	printf("taille séquence : %d\n", seqC.sequences[0]->taille);
 //	TT = initialise_TT(M.m, M.seqL->sequences[0]->taille);
-	int nb=0;
-	int marqueC[M.m];
-	int i;
-	for (i=0; i<M.m; i++){
-		marqueC[i] = 1;
-	}
-	if (propagLigne(&M, 0, marqueC, &nb))
-		affiche_matrice(&M);
+//	int nb=0;
+//	int marqueC[M.m];
+//	int i;
+//	for (i=0; i<M.m; i++){
+//		marqueC[i] = 1;
+//	}
+//	if (propagLigne(&M, 0, marqueC, &nb))
+//		affiche_matrice(&M);
 
 //	affiche_matrice(TT);
 	return 0;

@@ -20,6 +20,7 @@ int main(){
 		if (propagation(M)){
 			printf("Instance %s coloriée\n", instances[i]);
 			affiche_matrice(M);
+//			completer_coloriage(M);
 		}else{
 			printf("Instance %s non coloriée\n", instances[i]);
 		}

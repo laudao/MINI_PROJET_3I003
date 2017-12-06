@@ -54,9 +54,9 @@ int testVecteurLigne_Rec(t_matrice* matrice, int i, int j, int l, t_matrice *TT)
 
 int testVecteurColonne_Rec(t_matrice* matrice, int j, int i, int l, t_matrice *TT);
 
-int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb);
+int propagLigne(t_matrice* matrice, int i, int* marqueC, int *nb, int *cptcolor);
 
-int propagCol(t_matrice* matrice, int j, int* marqueL, int *nb);
+int propagCol(t_matrice* matrice, int j, int* marqueL, int *nb, int *cptcolor);
 
 int propagation(t_matrice *matrice);
 
