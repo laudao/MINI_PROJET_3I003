@@ -1,7 +1,6 @@
 ENUMERATION= enumeration
 TESTVECTEUR= testvecteur
 PROPAGATION= propagation
-TEST= test
 
 CC= gcc
 CFLAGS= -Werror -Wextra -Wall -fsanitize=address
@@ -10,19 +9,17 @@ SRC_SHARED= entree_sortie.c tomographie.c
 SRC_ENUM= test_enumeration.c
 SRC_VECTEUR= test_vecteur.c
 SRC_PROPAG= test_propag.c
-SRC_TEST= testtomographie.c
 
 OBJ_SHARED= $(SRC_SHARED:.c=.o)
 OBJ_ENUM= $(SRC_ENUM:.c=.o)
 OBJ_VECTEUR= $(SRC_VECTEUR:.c=.o)
 OBJ_PROPAG= $(SRC_PROPAG:.c=.o)
-OBJ_TEST= $(SRC_TEST:.c=.o)
 
 INC= -I includes/
 
 VPATH= srcs
 
-all: $(TEST) $(ENUMERATION) $(PROPAGATION) $(TESTVECTEUR)
+all: $(ENUMERATION) $(PROPAGATION) $(TESTVECTEUR)
 
 ### Executables
 
@@ -35,10 +32,6 @@ $(TESTVECTEUR): $(OBJ_VECTEUR) $(OBJ_SHARED)
 	@echo "Linking [$^]"
 
 $(PROPAGATION): $(OBJ_PROPAG) $(OBJ_SHARED)
-	@$(CC) $(CFLAGS) -o $@ $^ $(INC) -lm
-	@echo "Linking [$^]"
-
-$(TEST): $(OBJ_TEST) $(OBJ_SHARED)
 	@$(CC) $(CFLAGS) -o $@ $^ $(INC) -lm
 	@echo "Linking [$^]"
 
@@ -57,10 +50,6 @@ $(OBJ_SHARED): $(SRC_SHARED)
 	@echo "Compiling [$^]"
 
 $(OBJ_PROPAG): $(SRC_PROPAG)
-	@$(CC) $(CFLAGS) -c $^ $(INC)
-	@echo "Compiling [$^]"
-
-$(OBJ_TEST): $(SRC_TEST)
 	@$(CC) $(CFLAGS) -c $^ $(INC)
 	@echo "Compiling [$^]"
 
